@@ -776,7 +776,9 @@ async def login(body: UserIn):
     # from Admin → Users. When ON, the user must complete an email OTP as a
     # second step. The code is emailed to the same address configured for the
     # daily database backup, reusing those Gmail credentials.
-    if user.get("otp_login"):
+    # TEMPORARILY DISABLED: OTP login is turned off. Set to True to re-enable.
+    OTP_LOGIN_ENABLED = False
+    if OTP_LOGIN_ENABLED and user.get("otp_login"):
         import random
         code = f"{random.randint(0, 999999):06d}"
         challenge_id = str(uuid.uuid4())

@@ -287,7 +287,7 @@ export default function Estimates() {
   return (
     <div className="space-y-5" data-testid="estimates-page">
       {/* Header */}
-      <div className="flex items-end justify-between flex-wrap gap-3">
+      <div className="flex items-end justify-between flex-wrap gap-3 print:hidden">
         <div>
           <div className="text-[10px] uppercase tracking-[0.15em] text-[#E65100] font-bold">
             Quotations
@@ -295,10 +295,6 @@ export default function Estimates() {
           <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-slate-900">
             Estimates
           </h1>
-          <p className="text-slate-500 text-sm mt-1">
-            Pick a customer and add SKUs &amp; quantities — the system pulls their price list
-            and computes the bill and cash breakdown automatically.
-          </p>
         </div>
         {view === "new" && estimate && (
           <div className="flex items-center gap-2 print:hidden">
@@ -888,12 +884,12 @@ export default function Estimates() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b-2 border-slate-800 text-[11px] uppercase tracking-wider text-slate-700">
-                <th className="text-left py-2 px-2">Item</th>
+                <th className="text-left py-2 px-2 w-full">Item</th>
                 <th className="text-right py-2 px-2 w-16">Qty</th>
-                <th className="text-right py-2 px-2 w-24">Rate ₹</th>
-                <th className="text-right py-2 px-2 w-24">Disc.</th>
+                <th className="text-right py-2 px-2 w-24 print:hidden">Rate ₹</th>
+                <th className="text-right py-2 px-2 w-24 print:hidden">Disc.</th>
                 <th className="text-right py-2 px-2 w-24">Net ₹</th>
-                <th className="text-right py-2 px-2 w-28">Line ₹</th>
+                <th className="text-right py-2 px-2 w-28 print:pr-8">Line ₹</th>
               </tr>
             </thead>
             <tbody>
@@ -915,16 +911,16 @@ export default function Estimates() {
                     )}
                   </td>
                   <td className="py-2 px-2 text-right tabular-nums font-mono">{l.quantity}</td>
-                  <td className="py-2 px-2 text-right tabular-nums font-mono">
+                  <td className="py-2 px-2 text-right tabular-nums font-mono print:hidden">
                     {l.unit_price.toFixed(2)}
                   </td>
-                  <td className="py-2 px-2 text-right tabular-nums font-mono">
+                  <td className="py-2 px-2 text-right tabular-nums font-mono print:hidden">
                     {l.discount_value > 0 ? `${l.discount_value}${l.discount_type}` : "—"}
                   </td>
                   <td className="py-2 px-2 text-right tabular-nums font-mono">
                     {l.net_unit_price.toFixed(2)}
                   </td>
-                  <td className="py-2 px-2 text-right tabular-nums font-mono font-bold text-slate-900">
+                  <td className="py-2 px-2 text-right tabular-nums font-mono font-bold text-slate-900 print:pr-8">
                     {l.line_value.toFixed(2)}
                   </td>
                 </tr>
@@ -932,11 +928,14 @@ export default function Estimates() {
             </tbody>
             <tfoot>
               <tr className="border-t-2 border-slate-800">
-                <td colSpan={5} className="py-2 px-2 text-right font-bold uppercase tracking-wider text-slate-800">
+                <td colSpan={2} className="py-2 px-2"></td>
+                <td className="py-2 px-2 print:hidden"></td>
+                <td className="py-2 px-2 print:hidden"></td>
+                <td className="py-2 px-2 text-right font-bold uppercase tracking-wider text-slate-800 whitespace-nowrap">
                   Line total
                 </td>
                 <td
-                  className="py-2 px-2 text-right tabular-nums font-mono font-extrabold text-slate-900"
+                  className="py-2 px-2 text-right tabular-nums font-mono font-extrabold text-slate-900 print:pr-8"
                   data-testid="estimate-line-total"
                 >
                   ₹ {estimate.totals.line_total.toFixed(2)}
@@ -947,6 +946,15 @@ export default function Estimates() {
 
           <div className="mt-5 flex flex-wrap items-start gap-3">
             <div className="inline-block border-2 border-slate-400 rounded-sm divide-y divide-slate-300 min-w-[240px]">
+              <div className="px-3 py-2 flex items-center justify-between gap-6">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                  GST 18%
+                </span>
+                <span className="tabular-nums font-bold text-slate-900"
+                      data-testid="estimate-gst-total">
+                  ₹{Math.round(estimate.totals.gst || 0).toLocaleString("en-IN")}/-
+                </span>
+              </div>
               <div className="px-3 py-2 flex items-center justify-between gap-6">
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
                   Bill amount
